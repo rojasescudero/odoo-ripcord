@@ -1,5 +1,5 @@
 {
-    "name": "rojasescudero/odoo-ripcord",
+    "name": "tbondois/odoo-ripcord",
     "description": "Ripoo : a PHP7 XML-RPC client handler for Odoo External API",
     "minimum-stability": "stable",
     "require": {
