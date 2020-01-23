@@ -96,13 +96,19 @@ class OdooClient
     public $response;
 
     /**
+     * Verify SSL conection
+     * @var boolean
+     */
+    private $verifySSL;
+
+    /**
      * @param string $baseUrl The Odoo root url. Must contain the protocol like https://, can also :port or /sub/dir
      * @param null|string $db PostgreSQL database of Odoo containing Odoo tables
      * @param null|string $user The username (Odoo 11 : is email)
      * @param null|string $password Password of the user
      * @param null|string $apiPath if not using xmlrpc/2
      */
-    public function __construct(string $baseUrl, $db = null, $user = null, $password = null, $apiPath = null)
+    public function __construct(string $baseUrl, $db = null, $user = null, $password = null, $apiPath = null, $verifySSL = true)
     {
         // use customer or default API :
         $apiPath   = self::trimSlash($apiPath ?? self::DEFAULT_API);
@@ -116,6 +122,7 @@ class OdooClient
         $this->password  = $password;
         $this->createdAt = microtime(true);
         $this->pid       = '#'.$apiPath.'-'.microtime(true)."-".mt_rand(10000, 99000);
+        $this->verifySSL = $verifySSL;
 
         $this->serviceFactory = new ServiceFactory();
     }
@@ -183,7 +190,9 @@ class OdooClient
     {
         $endpoint = self::trimSlash($endpoint);
         if (empty($this->services[$endpoint])) {
-            $this->services[$endpoint] = $this->serviceFactory->create($endpoint, $this->apiUrl);
+            $context = ["ssl" => ["verify_peer" => $this->verifySSL, "verify_peer_name" => $this->verifySSL]];
+            $transport = new Stream($context);
+            $this->services[$endpoint] = $this->serviceFactory->create($endpoint, $this->apiUrl, null, $transport);
         }
         $this->currentEndpoint = $endpoint;
         return $this->services[$endpoint];
