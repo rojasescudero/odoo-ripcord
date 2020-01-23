@@ -7,6 +7,7 @@ use Ripcord\Exceptions\ConfigurationException;
 use Ripoo\Handler\{CommonHandlerTrait, DbHandlerTrait, ModelHandlerTrait};
 use Ripoo\Service\{CommonService, DbService, ModelService, ServiceFactory};
 use Ripoo\Exception\{CodingException, ResponseException, ResponseEntryException, ResponseFaultException, ResponseStatusException};
+use Ripcord\Client\Transport\Stream;
 
 /**
  * Uses Ripcord XML-RPC optimized for Odoo >=8.0
